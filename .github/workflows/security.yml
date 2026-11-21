@@ -46,7 +46,7 @@ jobs:
       - name: Run Semgrep directly
         run: semgrep scan --include="*.js" --config="p/javascript" --config="p/nodejs" --error
 
-    dast:
+  dast:
     name: Dynamic Analysis (OWASP ZAP)
     runs-on: ubuntu-latest
     steps:
