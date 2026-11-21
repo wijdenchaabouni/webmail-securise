@@ -74,16 +74,17 @@ app.get('/inbox', (req, res) => {
   `);
 });
 
-// ✅ ROUTE SÉCURISÉE
+// ✅ ROUTE SÉCURISÉE (Validée par Semgrep)
 app.get('/search', (req, res) => {
   const email = req.query.email;
   
-  // Validation stricte de l'entrée (Regex)
+  // Validation stricte
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !emailRegex.test(email)) {
     return res.status(400).send("Format d'email invalide");
   }
 
-  // On échappe l'entrée ou on utilise un template sécurisé
-  res.send("Recherche sécurisée effectuée pour l'email : " + email.replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+  // Encodage sécurisé pour empêcher le XSS
+  const safeEmail = encodeURIComponent(email);
+  res.send("Recherche sécurisée effectuée pour l'email : " + safeEmail);
 });
