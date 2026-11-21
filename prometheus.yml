@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'webmail'
+    static_configs:
+      - targets: ['webmail:3000']
