@@ -74,12 +74,12 @@ app.get('/inbox', (req, res) => {
   `);
 });
 
-// ⚠️ ROUTE VULNÉRABLE (pour le test SAST)
+// ⚠️ ROUTE VULNÉRABLE (pour test SAST) - Utilisation de eval (Très mauvaise pratique)
 app.get('/search', (req, res) => {
   const email = req.query.email;
-  // FAILLE : Concaténation directe (Injection SQL)
-  const query = "SELECT * FROM users WHERE email = '" + email + "'";
-  res.send("Recherche effectuée avec la requête : " + query);
+  // FAILLE CRITIQUE : Exécution de code arbitraire via eval()
+  eval("var result = " + email);
+  res.send("Recherche effectuée pour : " + email);
 });
 
 // Le serveur doit être démarré à la FIN du fichier
