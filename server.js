@@ -78,13 +78,16 @@ app.get('/inbox', (req, res) => {
 app.get('/search', (req, res) => {
   const email = req.query.email;
   
-  // Validation stricte
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !emailRegex.test(email)) {
     return res.status(400).send("Format d'email invalide");
   }
 
-  // Encodage sécurisé pour empêcher le XSS
   const safeEmail = encodeURIComponent(email);
   res.send("Recherche sécurisée effectuée pour l'email : " + safeEmail);
+});
+
+// LIGNE IMPORTANTE : Démarrer le serveur
+app.listen(port, () => {
+  console.log(`Webmail démarré sur http://localhost:${port}`);
 });
