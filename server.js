@@ -4,17 +4,14 @@ const client = require('prom-client');
 const app = express();
 const port = 3000;
 
-// Collecte des métriques par défaut (CPU, mémoire, event loop)
 client.collectDefaultMetrics();
 
-// Compteur de requêtes HTTP
 const httpRequestsTotal = new client.Counter({
   name: 'http_requests_total',
   help: 'Nombre total de requêtes HTTP',
   labelNames: ['method', 'route', 'status']
 });
 
-// Histogramme de durée des requêtes
 const httpRequestDuration = new client.Histogram({
   name: 'http_request_duration_seconds',
   help: 'Durée des requêtes HTTP en secondes',
@@ -22,7 +19,6 @@ const httpRequestDuration = new client.Histogram({
   buckets: [0.01, 0.05, 0.1, 0.5, 1, 2, 5]
 });
 
-// Middleware pour mesurer chaque requête
 app.use((req, res, next) => {
   const start = Date.now();
   res.on('finish', () => {
@@ -35,18 +31,15 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: true }));
 
-// Route de santé
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Endpoint de métriques pour Prometheus
 app.get('/metrics', async (req, res) => {
   res.set('Content-Type', client.register.contentType);
   res.end(await client.register.metrics());
 });
 
-// Formulaire de login
 app.get('/login', (req, res) => {
   res.send(`
     <html>
@@ -62,12 +55,10 @@ app.get('/login', (req, res) => {
   `);
 });
 
-// Traitement du login (simplifié, sans vraie authentification)
 app.post('/login', (req, res) => {
   res.redirect('/inbox');
 });
 
-// Boîte de réception factice
 app.get('/inbox', (req, res) => {
   res.send(`
     <html>
@@ -83,12 +74,15 @@ app.get('/inbox', (req, res) => {
   `);
 });
 
-app.listen(port, () => {// Route vulnérable (pour test de sécurité)
+// ⚠️ ROUTE VULNÉRABLE (pour le test SAST)
 app.get('/search', (req, res) => {
   const email = req.query.email;
-  // ⚠️ FAILLE VOLONTAIRE : Concaténation directe (Injection SQL)
+  // FAILLE : Concaténation directe (Injection SQL)
   const query = "SELECT * FROM users WHERE email = '" + email + "'";
-  
-  // On simule l'exécution de la requête
   res.send("Recherche effectuée avec la requête : " + query);
+});
+
+// Le serveur doit être démarré à la FIN du fichier
+app.listen(port, () => {
+  console.log(`Webmail démarré sur http://localhost:${port}`);
 });
