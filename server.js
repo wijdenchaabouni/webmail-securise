@@ -74,15 +74,16 @@ app.get('/inbox', (req, res) => {
   `);
 });
 
-// ⚠️ ROUTE VULNÉRABLE (pour test SAST) - Utilisation de eval (Très mauvaise pratique)
+// ✅ ROUTE SÉCURISÉE
 app.get('/search', (req, res) => {
   const email = req.query.email;
-  // FAILLE CRITIQUE : Exécution de code arbitraire via eval()
-  eval("var result = " + email);
-  res.send("Recherche effectuée pour : " + email);
-});
+  
+  // Validation stricte de l'entrée (Regex)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    return res.status(400).send("Format d'email invalide");
+  }
 
-// Le serveur doit être démarré à la FIN du fichier
-app.listen(port, () => {
-  console.log(`Webmail démarré sur http://localhost:${port}`);
+  // On échappe l'entrée ou on utilise un template sécurisé
+  res.send("Recherche sécurisée effectuée pour l'email : " + email.replace(/</g, "&lt;").replace(/>/g, "&gt;"));
 });
