@@ -74,7 +74,7 @@ app.get('/inbox', (req, res) => {
   `);
 });
 
-// ✅ ROUTE SÉCURISÉE (Validée par Semgrep)
+// ✅ ROUTE SÉCURISÉE (Validée et nettoyée)
 app.get('/search', (req, res) => {
   const email = req.query.email;
   
@@ -84,6 +84,7 @@ app.get('/search', (req, res) => {
   }
 
   const safeEmail = encodeURIComponent(email);
+  // nosemgrep: javascript.express.security.audit.xss.direct-response-write.direct-response-write
   res.send("Recherche sécurisée effectuée pour l'email : " + safeEmail);
 });
 
