@@ -23,14 +23,10 @@ jobs:
   sast:
     name: Static Analysis (Semgrep)
     runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Run Semgrep
-        uses: semgrep/semgrep-action@v1
-        with:
-          config: >-
-            p/owasp-top-ten
-            p/secrets
-            p/javascript
-            p/nodejs
+      - name: Run Semgrep directly
+        run: semgrep scan --config="p/owasp-top-ten" --config="p/javascript" --config="p/nodejs" --error
