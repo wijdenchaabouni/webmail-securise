@@ -83,6 +83,12 @@ app.get('/inbox', (req, res) => {
   `);
 });
 
-app.listen(port, () => {
-  console.log(`Webmail démarré sur http://localhost:${port}`);
+app.listen(port, () => {// Route vulnérable (pour test de sécurité)
+app.get('/search', (req, res) => {
+  const email = req.query.email;
+  // ⚠️ FAILLE VOLONTAIRE : Concaténation directe (Injection SQL)
+  const query = "SELECT * FROM users WHERE email = '" + email + "'";
+  
+  // On simule l'exécution de la requête
+  res.send("Recherche effectuée avec la requête : " + query);
 });
