@@ -90,9 +90,7 @@ app.get('/search', (req, res) => {
 
 // LIGNE IMPORTANTE : Démarrer le serveur
 // Route vulnérable pour test DAST
-app.get('/vuln', (req, res) => {
-  res.send("<h1>Recherche : " + req.query.q + "</h1>");
-});
+
 app.listen(port, () => {
   console.log(`Webmail démarré sur http://localhost:${port}`);
 });
